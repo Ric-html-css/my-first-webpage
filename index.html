@@ -4,14 +4,117 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My First Webpage</title>
-     <link rel="stylesheet" href="style.css">
+    
+
+       <link rel="stylesheet" href="style.css">
+       <style>
+        /* This tells the container to stack its items vertically */
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Keeps them centered on the page */
+            gap: 10px;          /* Adds a clean 10px space between the two buttons */
+        }
+    </style>
+
+       <style>
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center; 
+            gap: 10px;          
+        }
+
+        /* Styling for your new message box */
+        .message-box-container {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        textarea {
+            width: 300px;
+            height: 100px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 6px;
+            resize: vertical; /* Allows the user to resize it up and down, but not sideways */
+            font-family: inherit;
+        }
+
+
+.save-btn {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .save-btn:hover { background-color: #218838; }
+
+
+
+
+
+
+    </style>
+
+
+
+
 </head>
 <body>
 
     <h1>Welcome to My Webpage</h1>
     <p>This is a paragraph of text on my brand new website.</p>
     
+       <div class="button-container">
     <a href="https://www.google.com">Click here to visit Google</a>
+       <a href="https://mail.yahoo.com">Click here to visit Yahoo! Email</a>
+       </div>
+
+
+       <div class="message-box-container">
+        <textarea placeholder="Write your text message here..."></textarea>
+              <button class="save-btn" onclick="saveToBackend()">Save to Backend</button>
+
+
+    </div>
+
+
+<script>
+        // 2. Connect to YOUR specific Supabase project
+        // (You grab these keys from your Supabase Dashboard under Project Settings -> API)
+        const SUPABASE_URL = "https://vhbskohpermwkqjzwazt.supabase.co";
+        const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZoYnNrb2hwZXJtd2txanp3YXp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA0MDUwMjUsImV4cCI6MjA5NTk4MTAyNX0.i9nQ7vLBzRkpZvf7cQRqscUKi_Ne4XMlr6g3X5EqfGo";
+        
+        const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // 3. This function sends the text straight to your database!
+        async function saveToBackend() {
+            const userText = document.getElementById('message').value;
+
+            if(!userText) {
+                alert("Please write something first!");
+                return;
+            }
+
+            const { data, error } = await supabase
+                .from('messages') // Target your 'messages' table
+                .insert([{ text_content: userText }]); // Insert the text
+
+            if (error) {
+                console.error("Error saving data:", error);
+                alert("Oops! Something went wrong.");
+            } else {
+                alert("Success! Your message is safely stored in your cloud database.");
+                document.getElementById('message').value = ""; // Clear the box
+            }
+        }
+    </script>
 
 </body>
 </html>
